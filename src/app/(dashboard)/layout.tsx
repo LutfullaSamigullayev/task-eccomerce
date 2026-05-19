@@ -1,7 +1,16 @@
+import { Header } from "@/components/layout/Header";
+
 export default function DashboardLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  return <>{children}</>;
+  return (
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-950">
+      <Header />
+      <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6">
+        {children}
+      </main>
+    </div>
+  );
 }
