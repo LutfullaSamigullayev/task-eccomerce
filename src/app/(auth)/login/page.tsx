@@ -3,6 +3,7 @@
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 import { loginSchema, LoginFormValues } from "@/features/auth/schemas";
 import { useLogin } from "@/features/auth/hooks";
 
@@ -32,8 +33,10 @@ export default function LoginPage() {
   const onSubmit = async (values: LoginFormValues) => {
     try {
       await login(values);
+      toast.success("Tizimga muvaffaqiyatli kirdingiz!");
       router.push("/dashboard");
-    } catch (error) {
+    } catch {
+      toast.error("Login yoki parol noto'g'ri!");
       form.setError("root", {
         message: "Login yoki parol noto'g'ri. Iltimos, tekshirib qayta kiring.",
       });

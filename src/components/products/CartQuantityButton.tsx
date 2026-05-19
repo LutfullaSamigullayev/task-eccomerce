@@ -1,6 +1,7 @@
 "use client";
 
 import { ShoppingCart, Minus, Plus } from "lucide-react";
+import { toast } from "sonner";
 import { useCartStore } from "@/features/cart/store";
 
 interface CartQuantityButtonProps {
@@ -31,6 +32,7 @@ export function CartQuantityButton({
   const handleAdd = (e: React.MouseEvent) => {
     onClick?.(e);
     addItem({ id: productId, title, price, quantity: 1, discountPercentage, thumbnail });
+    toast.success(`"${title}" savatga qo'shildi!`, { duration: 2000 });
   };
 
   const handleIncrease = (e: React.MouseEvent) => {
@@ -40,6 +42,9 @@ export function CartQuantityButton({
 
   const handleDecrease = (e: React.MouseEvent) => {
     e.preventDefault();
+    if (quantity === 1) {
+      toast.info(`"${title}" savatdan olib tashlandi`, { duration: 2000 });
+    }
     updateQuantity(productId, quantity - 1);
   };
 

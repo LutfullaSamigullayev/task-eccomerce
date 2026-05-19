@@ -7,6 +7,7 @@ import { useAuthStore } from "@/features/auth/store";
 import { useCartStore } from "@/features/cart/store";
 import { ThemeToggle } from "./ThemeToggle";
 import { cn } from "@/lib/utils";
+import { toast } from "sonner";
 
 export function Header() {
   const pathname = usePathname();
@@ -16,6 +17,7 @@ export function Header() {
 
   const handleLogout = () => {
     logout();
+    toast.success("Tizimdan chiqildi!");
     router.push("/login");
   };
 
