@@ -5,6 +5,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { ShoppingCart, Package, LogOut } from "lucide-react";
 import { useAuthStore } from "@/features/auth/store";
 import { useCartStore } from "@/features/cart/store";
+import { ThemeToggle } from "./ThemeToggle";
 import { cn } from "@/lib/utils";
 
 export function Header() {
@@ -67,7 +68,7 @@ export function Header() {
         </nav>
 
         {/* User + Logout */}
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2">
           {user && (
             <div className="flex items-center gap-2">
               <img
@@ -80,6 +81,7 @@ export function Header() {
               </span>
             </div>
           )}
+          <ThemeToggle />
           <button
             onClick={handleLogout}
             className="flex items-center gap-1.5 rounded-lg px-3 py-2 text-sm font-medium text-gray-600 hover:bg-red-50 hover:text-red-600 dark:text-gray-400 dark:hover:bg-red-950 dark:hover:text-red-400 transition-colors"
