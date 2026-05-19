@@ -2,7 +2,14 @@
 
 import { useState, useCallback, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Search, AlertCircle, PackageSearch, ChevronDown, Loader2 } from "lucide-react";
+import { Search, AlertCircle, PackageSearch, Loader2 } from "lucide-react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { useDebounce } from "use-debounce";
 import { useCategories } from "@/features/products/hooks";
 import { useQuery } from "@tanstack/react-query";
@@ -107,21 +114,22 @@ function ProductsContent() {
           )}
         </div>
 
-        <div className="relative">
-          <select
-            value={category}
-            onChange={(e) => handleCategoryChange(e.target.value)}
-            className="w-full appearance-none rounded-lg border bg-white dark:bg-gray-900 dark:border-gray-700 py-2.5 pl-4 pr-9 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 sm:w-52"
-          >
-            <option value="">Barcha kategoriyalar</option>
+        <Select
+          value={category || "all"}
+          onValueChange={(v) => handleCategoryChange(v === "all" ? "" : v)}
+        >
+          <SelectTrigger className="w-full sm:w-52">
+            <SelectValue placeholder="Barcha kategoriyalar" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">Barcha kategoriyalar</SelectItem>
             {categories?.map((cat) => (
-              <option key={cat.slug} value={cat.slug}>
+              <SelectItem key={cat.slug} value={cat.slug}>
                 {cat.name}
-              </option>
+              </SelectItem>
             ))}
-          </select>
-          <ChevronDown size={14} className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-gray-400" />
-        </div>
+          </SelectContent>
+        </Select>
       </div>
 
       {/* Count */}

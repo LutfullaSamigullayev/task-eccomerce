@@ -62,7 +62,7 @@ export function Header() {
             )}
           >
             <Package size={16} />
-            Products
+            <span className="hidden sm:inline">Products</span>
           </Link>
 
           <Link
@@ -88,7 +88,7 @@ export function Header() {
                 </motion.span>
               )}
             </motion.span>
-            Cart
+            <span className="hidden sm:inline">Cart</span>
           </Link>
         </nav>
 
