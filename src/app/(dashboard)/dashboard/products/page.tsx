@@ -1,8 +1,9 @@
 ﻿"use client";
 
-import { useEffect, useState, useCallback, Suspense } from "react";
+import { useState, useCallback, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Search, AlertCircle, PackageSearch, ChevronDown } from "lucide-react";
+import { Search, AlertCircle, PackageSearch, ChevronDown, Loader2 } from "lucide-react";
+import { useDebounce } from "use-debounce";
 import { useCategories } from "@/features/products/hooks";
 import { useQuery } from "@tanstack/react-query";
 import {
@@ -25,14 +26,9 @@ function ProductsContent() {
   const urlPage = Number(searchParams.get("page") ?? "1");
 
   const [searchInput, setSearchInput] = useState(urlSearch);
-  const [debouncedSearch, setDebouncedSearch] = useState(urlSearch);
+  const [debouncedSearch, { isPending, flush }] = useDebounce(searchInput, 1000);
   const [category, setCategory] = useState(urlCategory);
   const [page, setPage] = useState(urlPage);
-
-  useEffect(() => {
-    const timer = setTimeout(() => setDebouncedSearch(searchInput), 400);
-    return () => clearTimeout(timer);
-  }, [searchInput]);
 
   const updateUrl = useCallback(
     (search: string, cat: string, p: number) => {
@@ -79,7 +75,7 @@ function ProductsContent() {
   const handleCategoryChange = (cat: string) => {
     setCategory(cat);
     setSearchInput("");
-    setDebouncedSearch("");
+    flush();
     setPage(1);
   };
 
@@ -101,8 +97,14 @@ function ProductsContent() {
             placeholder="Mahsulot qidirish..."
             value={searchInput}
             onChange={(e) => handleSearchChange(e.target.value)}
-            className="w-full rounded-lg border bg-white dark:bg-gray-900 dark:border-gray-700 py-2.5 pl-9 pr-4 text-sm text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full rounded-lg border bg-white dark:bg-gray-900 dark:border-gray-700 py-2.5 pl-9 pr-10 text-sm text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
+          {isPending() && (
+            <Loader2
+              size={14}
+              className="absolute right-3 top-1/2 -translate-y-1/2 animate-spin text-gray-400"
+            />
+          )}
         </div>
 
         <div className="relative">
