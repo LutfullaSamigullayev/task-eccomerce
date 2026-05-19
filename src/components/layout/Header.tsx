@@ -4,17 +4,14 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { ShoppingCart, Package, LogOut } from "lucide-react";
 import { useAuthStore } from "@/features/auth/store";
+import { useCartStore } from "@/features/cart/store";
 import { cn } from "@/lib/utils";
-
-const navLinks = [
-  { href: "/dashboard/products", label: "Products", icon: Package },
-  { href: "/dashboard/cart", label: "Cart", icon: ShoppingCart },
-];
 
 export function Header() {
   const pathname = usePathname();
   const router = useRouter();
   const { user, logout } = useAuthStore();
+  const totalQuantity = useCartStore((s) => s.totalQuantity);
 
   const handleLogout = () => {
     logout();
@@ -35,21 +32,38 @@ export function Header() {
 
         {/* Nav */}
         <nav className="flex items-center gap-1">
-          {navLinks.map(({ href, label, icon: Icon }) => (
-            <Link
-              key={href}
-              href={href}
-              className={cn(
-                "flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-colors",
-                pathname === href
-                  ? "bg-blue-50 text-blue-600 dark:bg-blue-950 dark:text-blue-400"
-                  : "text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800"
+          <Link
+            href="/dashboard/products"
+            className={cn(
+              "flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-colors",
+              pathname === "/dashboard/products"
+                ? "bg-blue-50 text-blue-600 dark:bg-blue-950 dark:text-blue-400"
+                : "text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800"
+            )}
+          >
+            <Package size={16} />
+            Products
+          </Link>
+
+          <Link
+            href="/dashboard/cart"
+            className={cn(
+              "relative flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-colors",
+              pathname === "/dashboard/cart"
+                ? "bg-blue-50 text-blue-600 dark:bg-blue-950 dark:text-blue-400"
+                : "text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800"
+            )}
+          >
+            <span className="relative">
+              <ShoppingCart size={16} />
+              {totalQuantity > 0 && (
+                <span className="absolute -top-2 -right-2 flex h-4 w-4 items-center justify-center rounded-full bg-blue-600 text-[10px] font-bold text-white">
+                  {totalQuantity > 99 ? "99+" : totalQuantity}
+                </span>
               )}
-            >
-              <Icon size={16} />
-              {label}
-            </Link>
-          ))}
+            </span>
+            Cart
+          </Link>
         </nav>
 
         {/* User + Logout */}
