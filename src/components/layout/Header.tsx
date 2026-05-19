@@ -10,7 +10,7 @@ import { ThemeToggle } from "./ThemeToggle";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import { motion, useAnimate } from "framer-motion";
-import { useEffect } from "react";
+import { useEffect, useCallback } from "react";
 
 export function Header() {
   const pathname = usePathname();
@@ -32,11 +32,11 @@ export function Header() {
     ).then(() => endShake());
   }, [shouldShake]);
 
-  const handleLogout = () => {
+  const handleLogout = useCallback(() => {
     logout();
     toast.success("Tizimdan chiqildi!");
     router.push("/login");
-  };
+  }, [logout, router]);
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-white dark:bg-gray-900 dark:border-gray-800">

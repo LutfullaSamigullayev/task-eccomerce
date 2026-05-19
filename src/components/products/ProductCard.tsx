@@ -1,5 +1,6 @@
 "use client";
 
+import { memo } from "react";
 import Link from "next/link";
 import { Star } from "lucide-react";
 import { Product } from "@/features/products/types";
@@ -9,7 +10,10 @@ interface ProductCardProps {
   product: Product;
 }
 
-export function ProductCard({ product }: ProductCardProps) {
+// Komponent tashqarisida — har render yangi funksiya yaratilmaydi
+const preventAndStop = (e: React.MouseEvent) => e.preventDefault();
+
+export const ProductCard = memo(function ProductCard({ product }: ProductCardProps) {
 
   return (
     <Link
@@ -59,10 +63,10 @@ export function ProductCard({ product }: ProductCardProps) {
             discountPercentage={product.discountPercentage}
             thumbnail={product.thumbnail}
             size="sm"
-            onClick={(e) => e.preventDefault()}
+            onClick={preventAndStop}
           />
         </div>
       </div>
     </Link>
   );
-}
+});

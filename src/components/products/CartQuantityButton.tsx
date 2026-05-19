@@ -1,5 +1,6 @@
 "use client";
 
+import { memo, useCallback } from "react";
 import { ShoppingCart, Minus, Plus } from "lucide-react";
 import { toast } from "sonner";
 import { useCartStore } from "@/features/cart/store";
@@ -16,7 +17,7 @@ interface CartQuantityButtonProps {
   onClick?: (e: React.MouseEvent) => void;
 }
 
-export function CartQuantityButton({
+export const CartQuantityButton = memo(function CartQuantityButton({
   productId,
   title,
   price,
@@ -26,40 +27,42 @@ export function CartQuantityButton({
   size = "sm",
   onClick,
 }: CartQuantityButtonProps) {
-  const { items, addItem, updateQuantity } = useCartStore();
+  // Faqat shu productning quantity si o'zgarganda render bo'ladi
+  const quantity = useCartStore(
+    (s) => s.items.find((i) => i.id === productId)?.quantity ?? 0
+  );
+  const addItem = useCartStore((s) => s.addItem);
+  const updateQuantity = useCartStore((s) => s.updateQuantity);
   const triggerFly = useAnimStore((s) => s.triggerFly);
-  const cartItem = items.find((i) => i.id === productId);
-  const quantity = cartItem?.quantity ?? 0;
 
-  const handleAdd = (e: React.MouseEvent) => {
+  const handleAdd = useCallback((e: React.MouseEvent) => {
     onClick?.(e);
     addItem({ id: productId, title, price, quantity: 1, discountPercentage, thumbnail });
     toast.success(`"${title}" savatga qo'shildi!`, { duration: 2000 });
 
-    // [data-card] yoki [data-main-image] dan rasmni topib animatsiyani boshlash
     const card = (e.currentTarget as HTMLElement).closest("[data-card]");
     const img = (card?.querySelector("img") ??
       document.querySelector("[data-main-image]")) as HTMLImageElement | null;
 
     if (img) {
       const rect = img.getBoundingClientRect();
-      const size = Math.min(rect.width, rect.height, 80); // max 80px
+      const size = Math.min(rect.width, rect.height, 80);
       triggerFly({ src: thumbnail, x: rect.left, y: rect.top, size });
     }
-  };
+  }, [productId, title, price, discountPercentage, thumbnail, addItem, triggerFly, onClick]);
 
-  const handleIncrease = (e: React.MouseEvent) => {
+  const handleIncrease = useCallback((e: React.MouseEvent) => {
     e.preventDefault();
     updateQuantity(productId, quantity + 1);
-  };
+  }, [productId, quantity, updateQuantity]);
 
-  const handleDecrease = (e: React.MouseEvent) => {
+  const handleDecrease = useCallback((e: React.MouseEvent) => {
     e.preventDefault();
     if (quantity === 1) {
       toast.info(`"${title}" savatdan olib tashlandi`, { duration: 2000 });
     }
     updateQuantity(productId, quantity - 1);
-  };
+  }, [productId, quantity, title, updateQuantity]);
 
   if (disabled) {
     return (
@@ -121,4 +124,4 @@ export function CartQuantityButton({
       {size === "lg" ? "Savatga qo'shish" : "Add"}
     </button>
   );
-}
+});

@@ -2,12 +2,14 @@
 
 import { motion, AnimatePresence } from "framer-motion";
 import { useEffect, useState } from "react";
+import { useShallow } from "zustand/react/shallow";
 import { useAnimStore } from "@/features/cart/animStore";
 
 export function FlyingCartImage() {
-  const flyItem = useAnimStore((s) => s.flyItem);
-  const endFly = useAnimStore((s) => s.endFly);
-  const triggerShake = useAnimStore((s) => s.triggerShake);
+  // useShallow: 3 ta alohida subscription o'rniga 1 ta — tezroq
+  const { flyItem, endFly, triggerShake } = useAnimStore(
+    useShallow((s) => ({ flyItem: s.flyItem, endFly: s.endFly, triggerShake: s.triggerShake }))
+  );
 
   // Cart icon ning ekrandagi pozitsiyasi
   const [target, setTarget] = useState({ x: 0, y: 0 });
