@@ -2,41 +2,15 @@
 
 import { useState } from "react";
 import { useParams, useRouter } from "next/navigation";
-import {
-  ArrowLeft,
-  Star,
-  ShoppingCart,
-  Check,
-  Package,
-  Tag,
-  Layers,
-  AlertCircle,
-} from "lucide-react";
+import { ArrowLeft, Star, Package, Tag, Layers, AlertCircle } from "lucide-react";
 import { useProduct } from "@/features/products/hooks";
-import { useCartStore } from "@/features/cart/store";
+import { CartQuantityButton } from "@/components/products/CartQuantityButton";
 
 export default function ProductDetailPage() {
   const { id } = useParams<{ id: string }>();
   const router = useRouter();
   const { data: product, isLoading, isError } = useProduct(Number(id));
-  const addItem = useCartStore((s) => s.addItem);
-
   const [selectedImage, setSelectedImage] = useState(0);
-  const [added, setAdded] = useState(false);
-
-  const handleAddToCart = () => {
-    if (!product) return;
-    addItem({
-      id: product.id,
-      title: product.title,
-      price: product.price,
-      quantity: 1,
-      discountPercentage: product.discountPercentage,
-      thumbnail: product.thumbnail,
-    });
-    setAdded(true);
-    setTimeout(() => setAdded(false), 2000);
-  };
 
   if (isLoading) {
     return (
@@ -60,9 +34,7 @@ export default function ProductDetailPage() {
     return (
       <div className="flex flex-col items-center justify-center gap-3 py-32 text-center">
         <AlertCircle size={40} className="text-red-400" />
-        <p className="font-semibold text-gray-700 dark:text-gray-300">
-          Mahsulot topilmadi
-        </p>
+        <p className="font-semibold text-gray-700 dark:text-gray-300">Mahsulot topilmadi</p>
         <button
           onClick={() => router.back()}
           className="mt-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
@@ -78,7 +50,6 @@ export default function ProductDetailPage() {
 
   return (
     <div>
-      {/* Back */}
       <button
         onClick={() => router.back()}
         className="mb-6 flex items-center gap-2 text-sm font-medium text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition-colors"
@@ -109,11 +80,7 @@ export default function ProductDetailPage() {
                       : "border-transparent hover:border-gray-300 dark:hover:border-gray-600"
                   }`}
                 >
-                  <img
-                    src={img}
-                    alt={`${product.title} ${i + 1}`}
-                    className="h-full w-full object-cover"
-                  />
+                  <img src={img} alt={`${product.title} ${i + 1}`} className="h-full w-full object-cover" />
                 </button>
               ))}
             </div>
@@ -122,7 +89,7 @@ export default function ProductDetailPage() {
 
         {/* Info */}
         <div className="flex flex-col gap-5">
-          {/* Category & Brand */}
+          {/* Badges */}
           <div className="flex flex-wrap gap-2">
             <span className="rounded-full bg-blue-100 dark:bg-blue-950 px-3 py-1 text-xs font-medium text-blue-600 dark:text-blue-400 capitalize">
               {product.category}
@@ -134,7 +101,6 @@ export default function ProductDetailPage() {
             )}
           </div>
 
-          {/* Title */}
           <h1 className="text-2xl font-bold text-gray-900 dark:text-white leading-snug">
             {product.title}
           </h1>
@@ -159,7 +125,6 @@ export default function ProductDetailPage() {
             </span>
           </div>
 
-          {/* Description */}
           <p className="text-sm leading-relaxed text-gray-600 dark:text-gray-400">
             {product.description}
           </p>
@@ -171,9 +136,7 @@ export default function ProductDetailPage() {
             </span>
             {product.discountPercentage > 0 && (
               <>
-                <span className="text-lg text-gray-400 line-through">
-                  ${product.price.toFixed(2)}
-                </span>
+                <span className="text-lg text-gray-400 line-through">${product.price.toFixed(2)}</span>
                 <span className="rounded-md bg-red-100 dark:bg-red-950 px-2 py-0.5 text-sm font-semibold text-red-600 dark:text-red-400">
                   -{Math.round(product.discountPercentage)}%
                 </span>
@@ -214,38 +177,22 @@ export default function ProductDetailPage() {
                 <Layers size={15} className="text-gray-400" />
                 <span>
                   Brand:{" "}
-                  <span className="font-semibold text-gray-900 dark:text-white">
-                    {product.brand}
-                  </span>
+                  <span className="font-semibold text-gray-900 dark:text-white">{product.brand}</span>
                 </span>
               </div>
             )}
           </div>
 
-          {/* Add to Cart */}
-          <button
-            onClick={handleAddToCart}
+          {/* Cart button */}
+          <CartQuantityButton
+            productId={product.id}
+            title={product.title}
+            price={product.price}
+            discountPercentage={product.discountPercentage}
+            thumbnail={product.thumbnail}
             disabled={product.stock === 0}
-            className={`flex w-full items-center justify-center gap-2 rounded-xl py-3.5 text-base font-semibold transition-colors ${
-              product.stock === 0
-                ? "cursor-not-allowed bg-gray-200 text-gray-400 dark:bg-gray-800 dark:text-gray-600"
-                : added
-                ? "bg-green-600 text-white hover:bg-green-700"
-                : "bg-blue-600 text-white hover:bg-blue-700"
-            }`}
-          >
-            {added ? (
-              <>
-                <Check size={18} /> Savatga qo'shildi!
-              </>
-            ) : product.stock === 0 ? (
-              "Mahsulot tugagan"
-            ) : (
-              <>
-                <ShoppingCart size={18} /> Savatga qo'shish
-              </>
-            )}
-          </button>
+            size="lg"
+          />
         </div>
       </div>
     </div>

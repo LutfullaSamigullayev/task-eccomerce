@@ -1,32 +1,15 @@
 "use client";
 
 import Link from "next/link";
-import { Star, ShoppingCart, Check } from "lucide-react";
-import { useState } from "react";
+import { Star } from "lucide-react";
 import { Product } from "@/features/products/types";
-import { useCartStore } from "@/features/cart/store";
+import { CartQuantityButton } from "./CartQuantityButton";
 
 interface ProductCardProps {
   product: Product;
 }
 
 export function ProductCard({ product }: ProductCardProps) {
-  const [added, setAdded] = useState(false);
-  const addItem = useCartStore((s) => s.addItem);
-
-  const handleAddToCart = (e: React.MouseEvent) => {
-    e.preventDefault();
-    addItem({
-      id: product.id,
-      title: product.title,
-      price: product.price,
-      quantity: 1,
-      discountPercentage: product.discountPercentage,
-      thumbnail: product.thumbnail,
-    });
-    setAdded(true);
-    setTimeout(() => setAdded(false), 1500);
-  };
 
   return (
     <Link
@@ -64,28 +47,19 @@ export function ProductCard({ product }: ProductCardProps) {
           </span>
         </div>
 
-        <div className="mt-auto flex items-center justify-between pt-2">
-          <span className="text-base font-bold text-gray-900 dark:text-white">
+        <div className="mt-auto flex items-center justify-between gap-2 pt-2">
+          <span className="text-base font-bold text-gray-900 dark:text-white shrink-0">
             ${product.price.toFixed(2)}
           </span>
-          <button
-            onClick={handleAddToCart}
-            className={`flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium transition-colors ${
-              added
-                ? "bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300"
-                : "bg-blue-600 text-white hover:bg-blue-700"
-            }`}
-          >
-            {added ? (
-              <>
-                <Check size={13} /> Added
-              </>
-            ) : (
-              <>
-                <ShoppingCart size={13} /> Add
-              </>
-            )}
-          </button>
+          <CartQuantityButton
+            productId={product.id}
+            title={product.title}
+            price={product.price}
+            discountPercentage={product.discountPercentage}
+            thumbnail={product.thumbnail}
+            size="sm"
+            onClick={(e) => e.preventDefault()}
+          />
         </div>
       </div>
     </Link>
