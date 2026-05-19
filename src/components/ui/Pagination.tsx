@@ -1,6 +1,6 @@
 "use client";
 
-import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface PaginationProps {
@@ -32,9 +32,9 @@ export function Pagination({ page, totalPages, onPageChange }: PaginationProps) 
 
   return (
     <div className="flex items-center justify-center gap-1 pt-8">
-      <PageBtn onClick={() => onPageChange(1)} disabled={page === 1} aria-label="Birinchi">
+      {/* <PageBtn onClick={() => onPageChange(1)} disabled={page === 1} aria-label="Birinchi">
         <ChevronsLeft size={15} />
-      </PageBtn>
+      </PageBtn> */}
       <PageBtn onClick={() => onPageChange(page - 1)} disabled={page === 1} aria-label="Oldingi">
         <ChevronLeft size={15} />
       </PageBtn>
@@ -58,9 +58,9 @@ export function Pagination({ page, totalPages, onPageChange }: PaginationProps) 
       <PageBtn onClick={() => onPageChange(page + 1)} disabled={page === totalPages} aria-label="Keyingi">
         <ChevronRight size={15} />
       </PageBtn>
-      <PageBtn onClick={() => onPageChange(totalPages)} disabled={page === totalPages} aria-label="Oxirgi">
+      {/* <PageBtn onClick={() => onPageChange(totalPages)} disabled={page === totalPages} aria-label="Oxirgi">
         <ChevronsRight size={15} />
-      </PageBtn>
+      </PageBtn> */}
     </div>
   );
 }

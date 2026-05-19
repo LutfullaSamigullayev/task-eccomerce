@@ -2,7 +2,7 @@
 
 import { useState, useCallback, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Search, AlertCircle, PackageSearch, Loader2 } from "lucide-react";
+import { Search, AlertCircle, PackageSearch, Loader2, X } from "lucide-react";
 import {
   Select,
   SelectContent,
@@ -21,6 +21,7 @@ import {
 import { ProductCard } from "@/components/products/ProductCard";
 import { ProductsGridSkeleton } from "@/components/products/ProductSkeleton";
 import { Pagination } from "@/components/ui/Pagination";
+import { Input } from "@/components/ui/input";
 
 const LIMIT = 12;
 
@@ -68,6 +69,7 @@ function ProductsContent() {
         return getProductsByCategory(category, { limit: LIMIT, skip });
       return getProducts({ limit: LIMIT, skip });
     },
+    staleTime: 5 * 60 * 1000,
   });
 
   const products = data?.products ?? [];
@@ -93,25 +95,33 @@ function ProductsContent() {
 
   return (
     <div>
+      <div className="flex flex-col sm:flex-row justify-between">
       <h1 className="mb-6 text-2xl font-bold text-gray-900 dark:text-white">Products</h1>
 
       {/* Filters */}
       <div className="mb-6 flex flex-col gap-3 sm:flex-row">
         <div className="relative flex-1">
-          <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
-          <input
+          <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 z-10" />
+          <Input
             type="text"
             placeholder="Mahsulot qidirish..."
             value={searchInput}
             onChange={(e) => handleSearchChange(e.target.value)}
-            className="w-full rounded-lg border bg-white dark:bg-gray-900 dark:border-gray-700 py-2.5 pl-9 pr-10 text-sm text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="pl-9 pr-10"
           />
-          {isPending() && (
+          {isPending() ? (
             <Loader2
               size={14}
               className="absolute right-3 top-1/2 -translate-y-1/2 animate-spin text-gray-400"
             />
-          )}
+          ) : searchInput ? (
+            <button
+              onClick={() => handleSearchChange("")}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200"
+            >
+              <X size={14} />
+            </button>
+          ) : null}
         </div>
 
         <Select
@@ -131,6 +141,8 @@ function ProductsContent() {
           </SelectContent>
         </Select>
       </div>
+      </div>
+
 
       {/* Count */}
       {!isLoading && !isError && total > 0 && (
