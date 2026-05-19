@@ -5,15 +5,32 @@ import { usePathname, useRouter } from "next/navigation";
 import { ShoppingCart, Package, LogOut } from "lucide-react";
 import { useAuthStore } from "@/features/auth/store";
 import { useCartStore } from "@/features/cart/store";
+import { useAnimStore } from "@/features/cart/animStore";
 import { ThemeToggle } from "./ThemeToggle";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
+import { motion, useAnimate } from "framer-motion";
+import { useEffect } from "react";
 
 export function Header() {
   const pathname = usePathname();
   const router = useRouter();
   const { user, logout } = useAuthStore();
   const totalQuantity = useCartStore((s) => s.totalQuantity);
+  const shouldShake = useAnimStore((s) => s.shouldShake);
+  const endShake = useAnimStore((s) => s.endShake);
+
+  // cart icon elementiga animate funksiyasi ulash
+  const [cartIconRef, animateCart] = useAnimate();
+
+  useEffect(() => {
+    if (!shouldShake) return;
+    // chayqalish: 0 → -20° → 20° → -15° → 15° → 0°
+    animateCart(cartIconRef.current,
+      { rotate: [0, -20, 20, -15, 15, -5, 5, 0] },
+      { duration: 0.45, ease: "easeInOut" }
+    ).then(() => endShake());
+  }, [shouldShake]);
 
   const handleLogout = () => {
     logout();
@@ -57,14 +74,20 @@ export function Header() {
                 : "text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800"
             )}
           >
-            <span className="relative">
+            <motion.span ref={cartIconRef} id="cart-icon" className="relative">
               <ShoppingCart size={16} />
               {totalQuantity > 0 && (
-                <span className="absolute -top-2 -right-2 flex h-4 w-4 items-center justify-center rounded-full bg-blue-600 text-[10px] font-bold text-white">
+                <motion.span
+                  key={totalQuantity}
+                  initial={{ scale: 1.6 }}
+                  animate={{ scale: 1 }}
+                  transition={{ type: "spring", stiffness: 400, damping: 15 }}
+                  className="absolute -top-2 -right-2 flex h-4 w-4 items-center justify-center rounded-full bg-blue-600 text-[10px] font-bold text-white"
+                >
                   {totalQuantity > 99 ? "99+" : totalQuantity}
-                </span>
+                </motion.span>
               )}
-            </span>
+            </motion.span>
             Cart
           </Link>
         </nav>

@@ -1,5 +1,6 @@
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
+import { FlyingCartImage } from "@/components/layout/FlyingCartImage";
 
 export default function DashboardLayout({
   children,
@@ -13,6 +14,7 @@ export default function DashboardLayout({
         {children}
       </main>
       <Footer />
+      <FlyingCartImage />
     </div>
   );
 }

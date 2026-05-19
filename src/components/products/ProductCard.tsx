@@ -14,6 +14,7 @@ export function ProductCard({ product }: ProductCardProps) {
   return (
     <Link
       href={`/dashboard/products/${product.id}`}
+      data-card
       className="group flex flex-col rounded-xl border bg-white dark:bg-gray-900 dark:border-gray-800 shadow-sm hover:shadow-md hover:border-blue-300 dark:hover:border-blue-700 transition-all overflow-hidden"
     >
       {/* Image */}

@@ -63,6 +63,7 @@ export default function ProductDetailPage() {
         <div className="flex flex-col gap-3">
           <div className="overflow-hidden rounded-xl border bg-white dark:bg-gray-900 dark:border-gray-800">
             <img
+              data-main-image
               src={images[selectedImage]}
               alt={product.title}
               className="aspect-square w-full object-cover"

@@ -3,6 +3,7 @@
 import { ShoppingCart, Minus, Plus } from "lucide-react";
 import { toast } from "sonner";
 import { useCartStore } from "@/features/cart/store";
+import { useAnimStore } from "@/features/cart/animStore";
 
 interface CartQuantityButtonProps {
   productId: number;
@@ -26,6 +27,7 @@ export function CartQuantityButton({
   onClick,
 }: CartQuantityButtonProps) {
   const { items, addItem, updateQuantity } = useCartStore();
+  const triggerFly = useAnimStore((s) => s.triggerFly);
   const cartItem = items.find((i) => i.id === productId);
   const quantity = cartItem?.quantity ?? 0;
 
@@ -33,6 +35,17 @@ export function CartQuantityButton({
     onClick?.(e);
     addItem({ id: productId, title, price, quantity: 1, discountPercentage, thumbnail });
     toast.success(`"${title}" savatga qo'shildi!`, { duration: 2000 });
+
+    // [data-card] yoki [data-main-image] dan rasmni topib animatsiyani boshlash
+    const card = (e.currentTarget as HTMLElement).closest("[data-card]");
+    const img = (card?.querySelector("img") ??
+      document.querySelector("[data-main-image]")) as HTMLImageElement | null;
+
+    if (img) {
+      const rect = img.getBoundingClientRect();
+      const size = Math.min(rect.width, rect.height, 80); // max 80px
+      triggerFly({ src: thumbnail, x: rect.left, y: rect.top, size });
+    }
   };
 
   const handleIncrease = (e: React.MouseEvent) => {
