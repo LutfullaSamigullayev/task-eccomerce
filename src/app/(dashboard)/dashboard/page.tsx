@@ -2,6 +2,7 @@
 
 import { useAuthStore } from "@/features/auth/store";
 import Link from "next/link";
+import Image from "next/image";
 import { Package, ShoppingCart } from "lucide-react";
 
 export default function DashboardPage() {
@@ -13,9 +14,11 @@ export default function DashboardPage() {
 
       {user && (
         <div className="mb-8 flex items-center gap-4 rounded-xl border bg-white dark:bg-gray-900 dark:border-gray-800 p-6 shadow-sm">
-          <img
+          <Image
             src={user.image}
             alt={user.firstName}
+            width={64}
+            height={64}
             className="h-16 w-16 rounded-full object-cover"
           />
           <div>

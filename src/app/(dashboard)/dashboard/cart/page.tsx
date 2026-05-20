@@ -1,6 +1,7 @@
 ﻿"use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { Minus, Plus, Trash2, ShoppingCart, ArrowLeft, PackageSearch } from "lucide-react";
 import { useCartStore } from "@/features/cart/store";
 
@@ -63,11 +64,13 @@ export default function CartPage() {
               className="flex gap-4 rounded-xl border bg-white dark:bg-gray-900 dark:border-gray-800 p-4 shadow-sm"
             >
               {/* Image */}
-              <Link href={`/dashboard/products/${item.id}`}>
-                <img
+              <Link href={`/dashboard/products/${item.id}`} className="flex-shrink-0">
+                <Image
                   src={item.thumbnail}
                   alt={item.title}
-                  className="h-20 w-20 flex-shrink-0 rounded-lg object-cover"
+                  width={80}
+                  height={80}
+                  className="h-20 w-20 rounded-lg object-cover"
                 />
               </Link>
 

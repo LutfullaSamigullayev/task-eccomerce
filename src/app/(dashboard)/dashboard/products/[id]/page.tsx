@@ -1,6 +1,7 @@
 ﻿"use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import { useParams, useRouter } from "next/navigation";
 import { ArrowLeft, Star, Package, Tag, Layers, AlertCircle } from "lucide-react";
 import { useProduct } from "@/features/products/hooks";
@@ -81,7 +82,13 @@ export default function ProductDetailPage() {
                       : "border-transparent hover:border-gray-300 dark:hover:border-gray-600"
                   }`}
                 >
-                  <img src={img} alt={`${product.title} ${i + 1}`} className="h-full w-full object-cover" />
+                  <Image
+                    src={img}
+                    alt={`${product.title} ${i + 1}`}
+                    width={64}
+                    height={64}
+                    className="h-full w-full object-cover"
+                  />
                 </button>
               ))}
             </div>

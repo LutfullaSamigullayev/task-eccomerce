@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import { ShoppingCart, Package, LogOut } from "lucide-react";
 import { useAuthStore } from "@/features/auth/store";
@@ -96,9 +97,11 @@ export function Header() {
         <div className="flex items-center gap-2">
           {user && (
             <div className="flex items-center gap-2">
-              <img
+              <Image
                 src={user.image}
                 alt={user.firstName}
+                width={32}
+                height={32}
                 className="h-8 w-8 rounded-full object-cover"
               />
               <span className="hidden text-sm font-medium text-gray-700 dark:text-gray-300 sm:block">
